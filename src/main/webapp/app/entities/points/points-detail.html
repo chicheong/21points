@@ -10,15 +10,18 @@
         </dd>
         <dt><span data-translate="healthApp.points.exercise">Exercise</span></dt>
         <dd>
-            <span>{{vm.points.exercise}}</span>
+            <i class="glyphicon" ng-class="{'glyphicon-ok text-success': vm.points.exercise,
+                                            'glyphicon-remove text-danger': !vm.points.exercise}"></i>
         </dd>
         <dt><span data-translate="healthApp.points.meals">Meals</span></dt>
         <dd>
-            <span>{{vm.points.meals}}</span>
+            <i class="glyphicon" ng-class="{'glyphicon-ok text-success': vm.points.meals,
+                                            'glyphicon-remove text-danger': !vm.points.meals}"></i>
         </dd>
         <dt><span data-translate="healthApp.points.alcohol">Alcohol</span></dt>
         <dd>
-            <span>{{vm.points.alcohol}}</span>
+            <i class="glyphicon" ng-class="{'glyphicon-ok text-success': vm.points.alcohol,
+                                            'glyphicon-remove text-danger': !vm.points.alcohol}"></i>
         </dd>
         <dt><span data-translate="healthApp.points.notes">Notes</span></dt>
         <dd>
