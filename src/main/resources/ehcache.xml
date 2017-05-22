@@ -36,4 +36,23 @@
     <cache name="org.jhipster.health.domain.User.persistentTokens"
            timeToLiveSeconds="3600">
     </cache>
-    </ehcache>
+    
+    <cache name="org.jhipster.health.domain.Points"
+                               timeToLiveSeconds="3600">
+                        </cache>
+                        
+    <cache name="org.jhipster.health.domain.Weight"
+                               timeToLiveSeconds="3600">
+                        </cache>
+
+                        
+    <cache name="org.jhipster.health.domain.Preferences"
+                               timeToLiveSeconds="3600">
+                        </cache>
+                        
+    <cache name="org.jhipster.health.domain.BloodPressure"
+                               timeToLiveSeconds="3600">
+                        </cache>
+                        
+    <!-- jhipster-needle-ehcache-add-entry -->
+</ehcache>
