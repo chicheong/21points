@@ -10,10 +10,13 @@ import org.jhipster.health.security.AuthoritiesConstants;
 import org.jhipster.health.security.SecurityUtils;
 import org.jhipster.health.web.rest.util.HeaderUtil;
 import org.jhipster.health.web.rest.util.PaginationUtil;
+import org.jhipster.health.web.rest.vm.PointsPerMonth;
+import org.jhipster.health.web.rest.vm.PointsPerWeek;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +27,9 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,7 +71,7 @@ public class PointsResource {
         if (points.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("points", "idexists", "A new points cannot already have an ID")).body(null);
         }
-        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)){
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)){
         	log.debug("No user passed in, using current user: {}", SecurityUtils.getCurrentUserLogin());
         	points.setUser(userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get());
         }
@@ -124,6 +130,60 @@ public class PointsResource {
         
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/points");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+    
+    /**
+     * GET /points : get all the points for the current week.
+     */
+    @RequestMapping(value = "/points-this-week",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public ResponseEntity<PointsPerWeek> getPointsThisWeek() {
+    	// Get current date
+    	LocalDate now = LocalDate.now();
+    	// Get first day of week
+    	LocalDate startOfWeek = now.with(DayOfWeek.MONDAY);
+    	// Get last day of week
+    	LocalDate endOfWeek = now.with(DayOfWeek.SUNDAY);
+    	log.debug("Looking for points between: {} and {}", startOfWeek, endOfWeek);
+    	
+    	List<Points> points = pointsRepository.findAllByDateBetweenAndUserLogin(startOfWeek, endOfWeek, SecurityUtils.getCurrentUserLogin());
+        return calculatePoints(startOfWeek, points);
+    }
+    
+    private ResponseEntity<PointsPerWeek> calculatePoints(LocalDate startOfWeek, List<Points> points) {
+    	Integer numPoints = points.stream()
+    			.mapToInt(p -> p.getExercise() + p.getMeals() + p.getAlcohol())
+    			.sum();
+    	
+    	PointsPerWeek count = new PointsPerWeek(startOfWeek, numPoints);
+    	return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+    
+    /**
+     * GET  /points : get all the points for a particular week.
+     */
+    @RequestMapping(value = "/points-by-week/{startDate}")
+    @Timed
+    public ResponseEntity<PointsPerWeek> getPointsByWeek(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate) {
+        // Get last day of week
+        LocalDate endOfWeek = startDate.with(DayOfWeek.SUNDAY);
+        List<Points> points = pointsRepository.findAllByDateBetweenAndUserLogin(startDate, endOfWeek, SecurityUtils.getCurrentUserLogin());
+        return calculatePoints(startDate, points);
+    }
+
+    /**
+     * GET  /points : get all the points for a particular current month.
+     */
+    @RequestMapping(value = "/points-by-month/{yearWithMonth}")
+    @Timed
+    public ResponseEntity<PointsPerMonth> getPointsByMonth(@PathVariable @DateTimeFormat(pattern="yyyy-MM") YearMonth yearWithMonth) {
+        // Get last day of the month
+        LocalDate endOfMonth = yearWithMonth.atEndOfMonth();
+        List<Points> points = pointsRepository.findAllByDateBetweenAndUserLogin(yearWithMonth.atDay(1), endOfMonth, SecurityUtils.getCurrentUserLogin());
+        PointsPerMonth pointsPerMonth = new PointsPerMonth(yearWithMonth, points);
+        return new ResponseEntity<>(pointsPerMonth, HttpStatus.OK);
     }
 
     /**
