@@ -5,9 +5,9 @@
         .module('healthApp')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$scope', 'Principal', 'LoginService', '$state'];
+    HomeController.$inject = ['$scope', 'Principal', 'LoginService', 'Preferences', 'Points', '$state'];
 
-    function HomeController ($scope, Principal, LoginService, $state) {
+    function HomeController ($scope, Principal, LoginService, Preferences, Points, $state) {
         var vm = this;
 
         vm.account = null;
@@ -24,6 +24,18 @@
             Principal.identity().then(function(account) {
                 vm.account = account;
                 vm.isAuthenticated = Principal.isAuthenticated;
+                
+                if (vm.isAuthenticated()) {
+                    Preferences.user(function (preferences) {
+                        vm.preferences = preferences;
+
+                        Points.thisWeek(function (points) {
+                        	 alert(points);
+                            vm.pointsThisWeek = points;
+                            vm.pointsPercentage = (points.points / vm.preferences.weeklyGoal) * 100;
+                        });
+                    });
+                }
             });
         }
         function register () {

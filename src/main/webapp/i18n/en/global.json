@@ -126,5 +126,5 @@
         "emailexists": "E-mail is already in use!",
         "idexists": "A new {{ entityName }} cannot already have an ID"
     },
-    "footer": "<strong>21-Points Health</strong> | An application developed for a better life and <a href='http://www.jhipster-book.com' target='_blank'>The JHipster Mini-Book</a> | By <a href='http://raibledesigns.com' target='_blank'>Matt Raible</a>"
+    "footer": "<strong>21-Points Health</strong> | An application developed for a better life and <a href='http://www.jhipster-book.com' target='_blank'>The JHipster Mini-Book</a> | By <a href='http://raibledesigns.com' target='_blank'>Kelvin Wong</a>"
 }
