@@ -28,9 +28,7 @@
                 if (vm.isAuthenticated()) {
                     Preferences.user(function (preferences) {
                         vm.preferences = preferences;
-
                         Points.thisWeek(function (points) {
-                        	 alert(points);
                             vm.pointsThisWeek = points;
                             vm.pointsPercentage = (points.points / vm.preferences.weeklyGoal) * 100;
                         });
