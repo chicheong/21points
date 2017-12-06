@@ -8,8 +8,8 @@ export const enum Units {
 export class Preferences implements BaseEntity {
     constructor(
         public id?: number,
-        public weekly_goal?: number,
-        public weight_units?: Units,
+        public weeklyGoal?: number,
+        public weightUnits?: Units,
         public user?: User,
     ) {
     }

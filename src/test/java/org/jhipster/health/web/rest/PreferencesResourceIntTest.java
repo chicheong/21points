@@ -87,8 +87,8 @@ public class PreferencesResourceIntTest {
      */
     public static Preferences createEntity(EntityManager em) {
         Preferences preferences = new Preferences()
-            .weekly_goal(DEFAULT_WEEKLY_GOAL)
-            .weight_units(DEFAULT_WEIGHT_UNITS);
+            .weeklyGoal(DEFAULT_WEEKLY_GOAL)
+            .weightUnits(DEFAULT_WEIGHT_UNITS);
         return preferences;
     }
 
@@ -113,8 +113,8 @@ public class PreferencesResourceIntTest {
         List<Preferences> preferencesList = preferencesRepository.findAll();
         assertThat(preferencesList).hasSize(databaseSizeBeforeCreate + 1);
         Preferences testPreferences = preferencesList.get(preferencesList.size() - 1);
-        assertThat(testPreferences.getWeekly_goal()).isEqualTo(DEFAULT_WEEKLY_GOAL);
-        assertThat(testPreferences.getWeight_units()).isEqualTo(DEFAULT_WEIGHT_UNITS);
+        assertThat(testPreferences.getWeeklyGoal()).isEqualTo(DEFAULT_WEEKLY_GOAL);
+        assertThat(testPreferences.getWeightUnits()).isEqualTo(DEFAULT_WEIGHT_UNITS);
 
         // Validate the Preferences in Elasticsearch
         Preferences preferencesEs = preferencesSearchRepository.findOne(testPreferences.getId());
@@ -142,10 +142,10 @@ public class PreferencesResourceIntTest {
 
     @Test
     @Transactional
-    public void checkWeekly_goalIsRequired() throws Exception {
+    public void checkWeeklyGoalIsRequired() throws Exception {
         int databaseSizeBeforeTest = preferencesRepository.findAll().size();
         // set the field null
-        preferences.setWeekly_goal(null);
+        preferences.setWeeklyGoal(null);
 
         // Create the Preferences, which fails.
 
@@ -160,10 +160,10 @@ public class PreferencesResourceIntTest {
 
     @Test
     @Transactional
-    public void checkWeight_unitsIsRequired() throws Exception {
+    public void checkWeightUnitsIsRequired() throws Exception {
         int databaseSizeBeforeTest = preferencesRepository.findAll().size();
         // set the field null
-        preferences.setWeight_units(null);
+        preferences.setWeightUnits(null);
 
         // Create the Preferences, which fails.
 
@@ -187,8 +187,8 @@ public class PreferencesResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(preferences.getId().intValue())))
-            .andExpect(jsonPath("$.[*].weekly_goal").value(hasItem(DEFAULT_WEEKLY_GOAL)))
-            .andExpect(jsonPath("$.[*].weight_units").value(hasItem(DEFAULT_WEIGHT_UNITS.toString())));
+            .andExpect(jsonPath("$.[*].weeklyGoal").value(hasItem(DEFAULT_WEEKLY_GOAL)))
+            .andExpect(jsonPath("$.[*].weightUnits").value(hasItem(DEFAULT_WEIGHT_UNITS.toString())));
     }
 
     @Test
@@ -202,8 +202,8 @@ public class PreferencesResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(preferences.getId().intValue()))
-            .andExpect(jsonPath("$.weekly_goal").value(DEFAULT_WEEKLY_GOAL))
-            .andExpect(jsonPath("$.weight_units").value(DEFAULT_WEIGHT_UNITS.toString()));
+            .andExpect(jsonPath("$.weeklyGoal").value(DEFAULT_WEEKLY_GOAL))
+            .andExpect(jsonPath("$.weightUnits").value(DEFAULT_WEIGHT_UNITS.toString()));
     }
 
     @Test
@@ -227,8 +227,8 @@ public class PreferencesResourceIntTest {
         // Disconnect from session so that the updates on updatedPreferences are not directly saved in db
         em.detach(updatedPreferences);
         updatedPreferences
-            .weekly_goal(UPDATED_WEEKLY_GOAL)
-            .weight_units(UPDATED_WEIGHT_UNITS);
+            .weeklyGoal(UPDATED_WEEKLY_GOAL)
+            .weightUnits(UPDATED_WEIGHT_UNITS);
 
         restPreferencesMockMvc.perform(put("/api/preferences")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -239,8 +239,8 @@ public class PreferencesResourceIntTest {
         List<Preferences> preferencesList = preferencesRepository.findAll();
         assertThat(preferencesList).hasSize(databaseSizeBeforeUpdate);
         Preferences testPreferences = preferencesList.get(preferencesList.size() - 1);
-        assertThat(testPreferences.getWeekly_goal()).isEqualTo(UPDATED_WEEKLY_GOAL);
-        assertThat(testPreferences.getWeight_units()).isEqualTo(UPDATED_WEIGHT_UNITS);
+        assertThat(testPreferences.getWeeklyGoal()).isEqualTo(UPDATED_WEEKLY_GOAL);
+        assertThat(testPreferences.getWeightUnits()).isEqualTo(UPDATED_WEIGHT_UNITS);
 
         // Validate the Preferences in Elasticsearch
         Preferences preferencesEs = preferencesSearchRepository.findOne(testPreferences.getId());
@@ -299,8 +299,8 @@ public class PreferencesResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(preferences.getId().intValue())))
-            .andExpect(jsonPath("$.[*].weekly_goal").value(hasItem(DEFAULT_WEEKLY_GOAL)))
-            .andExpect(jsonPath("$.[*].weight_units").value(hasItem(DEFAULT_WEIGHT_UNITS.toString())));
+            .andExpect(jsonPath("$.[*].weeklyGoal").value(hasItem(DEFAULT_WEEKLY_GOAL)))
+            .andExpect(jsonPath("$.[*].weightUnits").value(hasItem(DEFAULT_WEIGHT_UNITS.toString())));
     }
 
     @Test
